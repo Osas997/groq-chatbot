@@ -2,14 +2,14 @@ import {
   Body,
   Controller,
   Post,
-  HttpException,
   HttpStatus,
   Logger,
   HttpCode,
   Get,
 } from '@nestjs/common';
-import { RagService } from './rag.service';
+import { RagService } from './providers/rag.service';
 import { CreateQueryDto } from './dtos/create-query.dto';
+import { baseResponse } from 'src/helpers/base-response';
 
 @Controller('rag')
 export class RagController {
@@ -20,48 +20,20 @@ export class RagController {
   @Post('query')
   @HttpCode(HttpStatus.OK)
   async queryUMKM(@Body() queryDto: CreateQueryDto) {
-    try {
-      this.logger.log(`Received query: ${queryDto.question}`);
+    this.logger.log(`Received query: ${queryDto.question}`);
 
-      const answer = await this.ragService.queryRAG(queryDto.question);
+    const answer = await this.ragService.queryRAG(queryDto.question);
 
-      return {
-        message: 'Berhasil mendapat jawaban',
-        data: answer,
-      };
-    } catch (error) {
-      this.logger.error('Error processing query:', error);
-      throw new HttpException(
-        {
-          message: 'Failed to process your question',
-          error: error.message,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return baseResponse('Berhasil mendapat jawaban', answer);
   }
 
   @Get('insights')
   @HttpCode(HttpStatus.OK)
   async insights(): Promise<any> {
-    try {
-      this.logger.log('Processing insights');
+    this.logger.log('Processing insights');
 
-      const insights = await this.ragService.getInsights();
+    const insights = await this.ragService.getInsights();
 
-      return {
-        message: 'Berhasil mendapat insights',
-        data: insights,
-      };
-    } catch (error) {
-      this.logger.error('Error processing query:', error);
-      throw new HttpException(
-        {
-          message: 'Failed to process your question',
-          error: error.message,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return baseResponse('Berhasil mendapat insights', insights);
   }
 }

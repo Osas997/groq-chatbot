@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api');
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -16,9 +17,5 @@ async function bootstrap() {
   );
   app.enableCors();
   await app.listen(process.env.PORT ?? 3000);
-
-  console.log(
-    `RAG API is running on: http://localhost:${process.env.PORT || 3000}`,
-  );
 }
 bootstrap();
