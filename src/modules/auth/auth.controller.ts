@@ -4,6 +4,8 @@ import { LoginDto } from './dtos/login.dto';
 import { baseResponse } from 'src/helpers/base-response';
 import { Public } from './decorators/public.decorator';
 import { RefreshTokenDto } from './dtos/refresh-token.dto';
+import { User } from './decorators/user.decorator';
+import { ActiveUser } from './interfaces/user.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -23,5 +25,12 @@ export class AuthController {
   async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
     const data = await this.authService.generateRefreshToken(refreshTokenDto);
     return baseResponse('Refresh token successfully', data);
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  async logout(@User() user: ActiveUser) {
+    const data = await this.authService.logout(user);
+    return baseResponse('Logout successfully', data);
   }
 }

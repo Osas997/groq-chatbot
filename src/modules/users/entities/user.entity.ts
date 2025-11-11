@@ -1,5 +1,6 @@
 import { BaseCustomEntity } from 'src/common/base-custom.entity';
-import { Column, Entity } from 'typeorm';
+import { ScrapeResult } from 'src/modules/scraping/entities/scrape-result.entity';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity('users')
 export class User extends BaseCustomEntity {
@@ -10,5 +11,8 @@ export class User extends BaseCustomEntity {
   password: string;
 
   @Column({ type: 'varchar', nullable: true, name: 'refresh_token' })
-  refreshToken: string;
+  refreshToken: string | null;
+
+  @OneToMany(() => ScrapeResult, (scrapeResult) => scrapeResult.user)
+  scrapeResults: ScrapeResult[];
 }

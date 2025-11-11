@@ -14,6 +14,7 @@ import databaseConfig from './config/database.config';
 import envvalidation from './config/envvalidation';
 import jwtConfig from './config/jwt.config';
 import { AuthGuard } from './modules/auth/guards/auth.guard';
+import { ScrapingModule } from './modules/scraping/scraping.module';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { AuthGuard } from './modules/auth/guards/auth.guard';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
+        type: 'postgres',
         host: configService.get('database.host'),
         port: configService.get('database.port'),
         username: configService.get('database.username'),
@@ -48,6 +49,7 @@ import { AuthGuard } from './modules/auth/guards/auth.guard';
     AuthModule,
     UsersModule,
     UmkmModule,
+    ScrapingModule,
   ],
   controllers: [AppController],
   providers: [

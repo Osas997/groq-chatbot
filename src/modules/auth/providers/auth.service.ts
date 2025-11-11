@@ -8,6 +8,7 @@ import { UsersService } from 'src/modules/users/providers/users.service';
 import { LoginDto } from '../dtos/login.dto';
 import * as bcrypt from 'bcrypt';
 import { RefreshTokenDto } from '../dtos/refresh-token.dto';
+import { ActiveUser } from '../interfaces/user.interface';
 
 @Injectable()
 export class AuthService {
@@ -53,5 +54,9 @@ export class AuthService {
 
     const newAccessToken = await this.generateTokens.generateTokens(user);
     return newAccessToken.access_token;
+  }
+
+  async logout(user: ActiveUser) {
+    await this.usersService.updateRefreshToken(user.sub, null);
   }
 }
