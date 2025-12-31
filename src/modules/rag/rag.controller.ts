@@ -10,7 +10,10 @@ import {
 import { RagService } from './providers/rag.service';
 import { CreateQueryDto } from './dtos/create-query.dto';
 import { baseResponse } from 'src/helpers/base-response';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Public } from '../auth/decorators/public.decorator';
 
+@ApiTags('RAG')
 @Controller('rag')
 export class RagController {
   private readonly logger = new Logger(RagController.name);
@@ -19,6 +22,9 @@ export class RagController {
 
   @Post('query')
   @HttpCode(HttpStatus.OK)
+  @Public()
+  @ApiOperation({ summary: 'Ajukan pertanyaan ke sistem RAG' })
+  @ApiResponse({ status: 200, description: 'Berhasil mendapat jawaban' })
   async queryUMKM(@Body() queryDto: CreateQueryDto) {
     this.logger.log(`Received query: ${queryDto.question}`);
 
@@ -29,6 +35,9 @@ export class RagController {
 
   @Get('insights')
   @HttpCode(HttpStatus.OK)
+  @Public()
+  @ApiOperation({ summary: 'Ambil insights dari data RAG' })
+  @ApiResponse({ status: 200, description: 'Berhasil mendapat insights' })
   async insights(): Promise<any> {
     this.logger.log('Processing insights');
 
