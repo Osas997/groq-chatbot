@@ -3,9 +3,10 @@ import { ScrapingController } from './scraping.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScrapeResult } from './entities/scrape-result.entity';
 import { ScrapingService } from './providers/scraping.service';
+import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ScrapeResult])],
+  imports: [TypeOrmModule.forFeature([ScrapeResult]), UsersModule],
   controllers: [ScrapingController],
   providers: [ScrapingService],
 })
