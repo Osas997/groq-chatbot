@@ -65,11 +65,48 @@ export class LoadDocumentsProvider {
     // Convert JSON object to readable text
     let text = '';
 
+    const formatPrimitive = (v: any) => {
+      if (v === null) return 'null';
+      if (v === undefined) return 'undefined';
+      if (typeof v === 'string') return v;
+      if (typeof v === 'number' || typeof v === 'boolean') return String(v);
+      return JSON.stringify(v);
+    };
+
+    const formatArray = (key: string, arr: any[], prefix: string) => {
+      if (arr.length === 0) {
+        text += `${prefix}${key}: []\n`;
+        return;
+      }
+
+      const isObjectArray = arr.every(
+        (v) => typeof v === 'object' && v !== null && !Array.isArray(v),
+      );
+
+      if (!isObjectArray) {
+        text += `${prefix}${key}: ${arr.map(formatPrimitive).join(', ')}\n`;
+        return;
+      }
+
+      text += `${prefix}${key}:\n`;
+      for (const item of arr) {
+        const entries = Object.entries(item);
+        if (entries.length === 0) {
+          text += `${prefix}  - {}\n`;
+          continue;
+        }
+        const summary = entries
+          .map(([k, v]) => `${k}: ${formatPrimitive(v)}`)
+          .join(' | ');
+        text += `${prefix}  - ${summary}\n`;
+      }
+    };
+
     const processObject = (item: any, prefix = '') => {
       for (const [key, value] of Object.entries(item)) {
         if (typeof value === 'object' && value !== null) {
           if (Array.isArray(value)) {
-            text += `${prefix}${key}: ${value.join(', ')}\n`;
+            formatArray(key, value, prefix);
           } else {
             text += `${prefix}${key}:\n`;
             processObject(value, prefix + '  ');

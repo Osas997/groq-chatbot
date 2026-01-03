@@ -49,7 +49,6 @@ export class RagService implements OnModuleInit {
         modelName: 'text-embedding-004',
       });
 
-      // Initialize PostgreSQL pool for PGVector using DATABASE_* env
       this.pool = new Pool({
         host: this.configService.get('database.host'),
         port: this.configService.get('database.port'),
@@ -67,7 +66,6 @@ export class RagService implements OnModuleInit {
   }
 
   private async initializeRAG() {
-    // Load and process documents
     const documents = await this.loadDocumentsProvider.loadDocuments();
 
     // Split documents
@@ -133,6 +131,7 @@ export class RagService implements OnModuleInit {
 
         Pertanyaan: {question}
 
+        Jawab dengan konsisten sesuai konteks. 
         Jawaban:`,
     );
 
@@ -140,11 +139,12 @@ export class RagService implements OnModuleInit {
       {
         context: async (input: { question: string }) => {
           const retriever = this.vectorStore.asRetriever({
-            k: 5, // Return top 5 relevant documents
+            k: 5,
             searchType: 'similarity',
           });
 
           const relevantDocs = await retriever.invoke(input.question);
+
           return relevantDocs.map((doc) => doc.pageContent).join('\n\n');
         },
         question: (input: { question: string }) => input.question,
