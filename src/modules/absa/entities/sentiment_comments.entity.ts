@@ -1,0 +1,41 @@
+import { BaseCustomEntity } from 'src/common/base-custom.entity';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { SentimentResult } from './sentiment_result.entity.entity';
+import { Sentiment } from '../enums/sentiment.enum';
+
+@Entity('sentiment_comments')
+export class SentimentComments extends BaseCustomEntity {
+  @Column({ unique: false, nullable: false, type: 'varchar', length: 255 })
+  comment: string;
+
+  @Column({
+    nullable: false,
+    name: 'food_quality',
+    type: 'simple-enum',
+    enum: Sentiment,
+  })
+  foodQuality: Sentiment;
+
+  @Column({
+    nullable: false,
+    name: 'price',
+    type: 'simple-enum',
+    enum: Sentiment,
+  })
+  price: Sentiment;
+
+  @Column({
+    nullable: false,
+    name: 'service',
+    type: 'simple-enum',
+    enum: Sentiment,
+  })
+  service: Sentiment;
+
+  @ManyToOne(
+    () => SentimentResult,
+    (sentimentResult) => sentimentResult.sentimentComments,
+  )
+  @JoinColumn({ name: 'sentiment_result_id' })
+  sentimentResult: SentimentResult;
+}

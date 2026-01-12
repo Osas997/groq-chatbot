@@ -15,6 +15,7 @@ import envvalidation from './config/envvalidation';
 import jwtConfig from './config/jwt.config';
 import { AuthGuard } from './modules/auth/guards/auth.guard';
 import { ScrapingModule } from './modules/scraping/scraping.module';
+import { AbsaModule } from './modules/absa/absa.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { ScrapingModule } from './modules/scraping/scraping.module';
     UsersModule,
     UmkmModule,
     ScrapingModule,
+    AbsaModule,
   ],
   controllers: [AppController],
   providers: [

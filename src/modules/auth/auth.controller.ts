@@ -38,6 +38,16 @@ export class AuthController {
     return baseResponse('Refresh token successfully', data);
   }
 
+  @Post('me')
+  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current user' })
+  @ApiResponse({ status: 200, description: 'Get user successfully' })
+  async me(@User() user: ActiveUser) {
+    const data = await this.authService.me(user);
+    return baseResponse('Get user successfully', data);
+  }
+
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()

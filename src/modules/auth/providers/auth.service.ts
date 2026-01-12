@@ -56,6 +56,14 @@ export class AuthService {
     return newAccessToken.access_token;
   }
 
+  async me(user: ActiveUser) {
+    const data = await this.usersService.findById(user.sub);
+    return {
+      id: data.id,
+      username: data.username,
+    };
+  }
+
   async logout(user: ActiveUser) {
     await this.usersService.updateRefreshToken(user.sub, null);
   }

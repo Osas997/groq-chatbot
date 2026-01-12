@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -44,21 +45,21 @@ export class ScrapingController {
     status: 200,
     description: 'Berhasil mengambil hasil scraping',
   })
-  async getResults() {
-    const results = await this.scrapingService.getResults();
+  async getResults(@User() user: ActiveUser) {
+    const results = await this.scrapingService.getResults(user.sub);
     return baseResponse('Berhasil mengambil hasil scraping', results);
   }
 
-  @Get('results/:id')
+  @Delete('results/:id')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Ambil detail hasil scraping berdasarkan id' })
+  @ApiOperation({ summary: 'Hapus hasil scraping berdasarkan id' })
   @ApiResponse({
     status: 200,
-    description: 'Berhasil mengambil detail hasil scraping',
+    description: 'Berhasil menghapus hasil scraping',
   })
   @ApiResponse({ status: 404, description: 'Hasil scraping tidak ditemukan' })
-  async getResultById(@Param('id') id: string) {
-    const result = await this.scrapingService.getResultById(id);
-    return baseResponse('Berhasil mengambil detail hasil scraping', result);
+  async deleteResult(@Param('id') id: string) {
+    await this.scrapingService.deleteResult(id);
+    return baseResponse('Berhasil menghapus hasil scraping', null);
   }
 }

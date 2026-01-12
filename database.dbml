@@ -1,0 +1,63 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+// Users table
+Table users {
+  id: varchar [pk, unique] // UUID
+  username: varchar [unique]
+  password: varchar
+  refresh_token: varchar [null]
+  created_at: timestamp [default: `now()`]
+  updated_at: timestamp [null]
+}
+
+// Scrape results table
+Table scrape_results {
+  id: varchar [pk, unique] // UUID
+  username: varchar [not null]
+  full_name: varchar [null]
+  bio: varchar [null]
+  post_count: int [null]
+  data: jsonb [not null]
+  user_id: varchar [not null]
+  created_at: timestamp [default: `now()`]
+  updated_at: timestamp [null]
+  
+  Indexes {
+    (data)
+  }
+}
+
+// Sentiment results table
+Table sentiment_result {
+  id: varchar [pk, unique] // UUID
+  scrape_result_id: varchar [not null]
+  created_at: timestamp [default: `now()`]
+  updated_at: timestamp [null]
+}
+
+// Sentiment comments table
+Table sentiment_comments {
+  id: varchar [pk, unique] // UUID
+  comment: varchar [not null]
+  food_quality: varchar [not null] // positive, negative, neutral
+  price: varchar [not null] // positive, negative, neutral
+  service: varchar [not null] // positive, negative, neutral
+  sentiment_result_id: varchar [not null]
+  created_at: timestamp [default: `now()`]
+  updated_at: timestamp [null]
+}
+
+// Recommendation results table
+Table recommendation_result {
+  id: varchar [pk, unique] // UUID
+  sentiment_result_id: varchar [not null]
+  created_at: timestamp [default: `now()`]
+  updated_at: timestamp [null]
+}
+
+// Relationships
+Ref: "users.id" < "scrape_results.user_id"
+Ref: "scrape_results.id" - "sentiment_result.scrape_result_id" // One-to-One
+Ref: "sentiment_result.id" < "sentiment_comments.sentiment_result_id" // One-to-Many
+Ref: "sentiment_result.id" < "recommendation_result.sentiment_result_id" // One-to-Many

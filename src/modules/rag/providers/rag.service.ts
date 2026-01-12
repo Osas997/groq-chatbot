@@ -69,14 +69,14 @@ export class RagService implements OnModuleInit {
     const documents = await this.loadDocumentsProvider.loadDocuments();
 
     // Split documents
-    const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1000,
-      chunkOverlap: 200,
-      separators: ['\n\n', '\n', '.', '!', '?', ';', ',', ' ', ''],
-    });
+    // const textSplitter = new RecursiveCharacterTextSplitter({
+    //   chunkSize: 5000,
+    //   chunkOverlap: 0,
+    //   separators: ['\n\n', '\n', '.', '!', '?', ';', ',', ' ', ''],
+    // });
 
-    const splitDocs = await textSplitter.splitDocuments(documents);
-    this.logger.log(`Created ${splitDocs.length} document chunks`);
+    // const splitDocs = await textSplitter.splitDocuments(documents);
+    // this.logger.log(`Created ${splitDocs.length} document chunks`);
 
     const schema = this.configService.get('DATABASE_SCHEMA') || 'public';
     const table =
@@ -105,7 +105,7 @@ export class RagService implements OnModuleInit {
     } else {
       // Insert new vectors
       this.vectorStore = await PGVectorStore.fromDocuments(
-        splitDocs,
+        documents,
         this.embeddings,
         {
           pool: this.pool,
@@ -113,7 +113,7 @@ export class RagService implements OnModuleInit {
         },
       );
       this.logger.log(
-        `Inserted ${splitDocs.length} chunks into ${qualifiedForStore}`,
+        `Inserted ${documents.length} chunks into ${qualifiedForStore}`,
       );
     }
 

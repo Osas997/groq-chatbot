@@ -28,7 +28,9 @@ export class ScrapingService {
     };
   }
 
-  async getResults(): Promise<ScrapeResult[]> {
+  async getResults(userId: string): Promise<ScrapeResult[]> {
+    const user = await this.userService.findById(userId);
+
     return await this.scrapeResultRepository.find({
       order: { created_at: 'DESC' },
       select: {
@@ -37,6 +39,9 @@ export class ScrapingService {
         fullName: true,
         bio: true,
         postCount: true,
+      },
+      where: {
+        user,
       },
     });
   }
@@ -58,5 +63,17 @@ export class ScrapingService {
     }
 
     return result;
+  }
+
+  async deleteResult(id: string): Promise<void> {
+    const result = await this.scrapeResultRepository.findOne({
+      where: { id },
+    });
+
+    if (!result) {
+      throw new NotFoundException('Scrape result not found');
+    }
+
+    await this.scrapeResultRepository.delete(id);
   }
 }

@@ -1,11 +1,19 @@
 import { BaseCustomEntity } from 'src/common/base-custom.entity';
+import { SentimentResult } from 'src/modules/absa/entities/sentiment_result.entity.entity';
 import { User } from 'src/modules/users/entities/user.entity';
-import { Column, Entity, ManyToOne, JoinColumn, Index } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  JoinColumn,
+  Index,
+  OneToOne,
+} from 'typeorm';
 
 @Entity({ name: 'scrape_results' })
 @Index(['data'])
 export class ScrapeResult extends BaseCustomEntity {
-  @Column({ unique: true, nullable: false, type: 'varchar', length: 255 })
+  @Column({ unique: false, nullable: false, type: 'varchar', length: 255 })
   username: string;
 
   @Column({ nullable: true, type: 'varchar', length: 255, name: 'full_name' })
@@ -23,4 +31,10 @@ export class ScrapeResult extends BaseCustomEntity {
   @ManyToOne(() => User, (user) => user.scrapeResults)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @OneToOne(
+    () => SentimentResult,
+    (sentimentResult) => sentimentResult.scrapeResult,
+  )
+  sentimentResults: SentimentResult;
 }
