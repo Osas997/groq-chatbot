@@ -10,6 +10,7 @@ import { RecommendationCaptions } from './entities/recommendation_captions.entit
 import { RecommendationHastags } from './entities/recommendation_hastags.entity';
 import { HttpModule } from '@nestjs/axios';
 import { ScrapingModule } from '../scraping/scraping.module';
+import { FileModule } from 'src/common/file/file.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ScrapingModule } from '../scraping/scraping.module';
     ]),
     HttpModule,
     ScrapingModule,
+    FileModule,
   ],
   controllers: [AbsaController],
   providers: [AbsaService],

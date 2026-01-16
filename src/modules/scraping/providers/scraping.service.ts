@@ -4,9 +4,10 @@ import { Repository } from 'typeorm';
 import { ScrapeResult } from '../entities/scrape-result.entity';
 import { CreateScrapeResultDto } from '../dto/scrape.dto';
 import { NotFoundException } from '@nestjs/common';
-import { User } from 'src/modules/users/entities/user.entity';
 import { UsersService } from 'src/modules/users/providers/users.service';
 import { FileService } from 'src/common/file/file.service';
+import { Parser } from 'json2csv';
+import * as ExcelJS from 'exceljs';
 
 @Injectable()
 export class ScrapingService {
@@ -63,14 +64,13 @@ export class ScrapingService {
     });
 
     return results.map((result) => {
-      const isAnalyzed = result.sentimentResults ? true : false;
       return {
         id: result.id,
         username: result.username,
         full_name: result.fullName,
         bio: result.bio,
         post_count: result.postCount,
-        is_analyzed: isAnalyzed,
+        is_analyzed: result.sentimentResults ? true : false,
       };
     });
   }
@@ -101,5 +101,47 @@ export class ScrapingService {
     }
 
     await this.scrapeResultRepository.delete(id);
+  }
+
+  async downloadCsv(id: string): Promise<string> {
+    const result = await this.getResultById(id);
+    const fileContent = await this.fileService.readJson(result.fullData, 'scraping');
+    const jsonData = JSON.parse(fileContent.toString());
+
+    // Flatten the data if it's an array, or wrap it in an array if it's an object
+    const data = Array.isArray(jsonData) ? jsonData : [jsonData];
+
+    const parser = new Parser();
+    const csv = parser.parse(data);
+
+    return csv;
+  }
+
+  async downloadExcel(id: string): Promise<Buffer> {
+    const result = await this.getResultById(id);
+    const fileContent = await this.fileService.readJson(result.fullData, 'scraping');
+    const jsonData = JSON.parse(fileContent.toString());
+
+    const data = Array.isArray(jsonData) ? jsonData : [jsonData];
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Scraping Result');
+
+    if (data.length > 0) {
+      // Generate headers from the keys of the first object
+      const headers = Object.keys(data[0]).map((key) => ({
+        header: key,
+        key: key,
+        width: 20, // Default width
+      }));
+
+      worksheet.columns = headers;
+
+      // Add rows
+      worksheet.addRows(data);
+    }
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    return buffer as any;
   }
 }

@@ -5,7 +5,7 @@ import { Sentiment } from '../enums/sentiment.enum';
 
 @Entity('sentiment_comments')
 export class SentimentComments extends BaseCustomEntity {
-  @Column({ unique: false, nullable: false, type: 'varchar', length: 255 })
+  @Column({ unique: false, nullable: false, type: 'varchar', length: 800 })
   comment: string;
 
   @Column({
@@ -14,7 +14,7 @@ export class SentimentComments extends BaseCustomEntity {
     type: 'simple-enum',
     enum: Sentiment,
   })
-  foodQuality: Sentiment;
+  food_quality: Sentiment;
 
   @Column({
     nullable: false,

@@ -7,6 +7,12 @@ import { ScrapeResult } from 'src/modules/scraping/entities/scrape-result.entity
 
 @Entity('sentiment_result')
 export class SentimentResult extends BaseCustomEntity {
+  @Column({type: 'jsonb'})
+  summary: any;
+  
+  @Column({type: 'jsonb'})
+  sentiment_trend: any;
+
   @ManyToOne(
     () => ScrapeResult,
     (scrapeResult) => scrapeResult.sentimentResults,

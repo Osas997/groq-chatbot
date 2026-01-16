@@ -55,7 +55,7 @@ export class FileService {
    */
   async readJson(
     fileName: string,
-    subFolder: string = 'json',
+    subFolder: string = '',
   ): Promise<Buffer> {
     try {
       const filePath = path.join(this.uploadPath, subFolder, fileName);
@@ -81,7 +81,7 @@ export class FileService {
    */
   async deleteJson(
     fileName: string,
-    subFolder: string = 'json',
+    subFolder: string = '',
   ): Promise<void> {
     try {
       const filePath = path.join(this.uploadPath, subFolder, fileName);

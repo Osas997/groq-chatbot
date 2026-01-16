@@ -4,8 +4,8 @@ import { RecommendationResult } from './recommendation_result.entity';
 
 @Entity('recommendation_best_posting')
 export class RecommendationBestPosting extends BaseCustomEntity {
-  @Column({ type: 'timestamp' })
-  time: Date;
+  @Column({ type: 'varchar', length: 255 })
+  time: string;
 
   @Column({ type: 'varchar', length: 255 })
   day: string;

@@ -9,7 +9,9 @@ import {
   Post,
   UploadedFile,
   UseInterceptors,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import {
   ApiBearerAuth,
   ApiConsumes,
@@ -79,5 +81,39 @@ export class ScrapingController {
   async deleteResult(@Param('id') id: string) {
     await this.scrapingService.deleteResult(id);
     return baseResponse('Berhasil menghapus hasil scraping', null);
+  }
+
+  @Get('results/:id/download/csv')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Download hasil scraping dalam format CSV' })
+  @ApiResponse({
+    status: 200,
+    description: 'Berhasil mendownload CSV',
+  })
+  async downloadCsv(@Param('id') id: string, @Res() res: Response) {
+    const csv = await this.scrapingService.downloadCsv(id);
+    res.header('Content-Type', 'text/csv');
+    res.header('Content-Disposition', 'attachment; filename="scraping-result.csv"');
+    res.send(csv);
+  }
+
+  @Get('results/:id/download/excel')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Download hasil scraping dalam format Excel' })
+  @ApiResponse({
+    status: 200,
+    description: 'Berhasil mendownload Excel',
+  })
+  async downloadExcel(@Param('id') id: string, @Res() res: Response) {
+    const buffer = await this.scrapingService.downloadExcel(id);
+    res.header(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.header(
+      'Content-Disposition',
+      'attachment; filename="scraping-result.xlsx"',
+    );
+    res.send(buffer);
   }
 }
