@@ -40,10 +40,10 @@ export class ScrapingService {
     };
   }
 
-  async getResults(userId: string): Promise<ScrapeResult[]> {
+  async getResults(userId: string) {
     const user = await this.userService.findById(userId);
 
-    return await this.scrapeResultRepository.find({
+    const results = await this.scrapeResultRepository.find({
       order: { created_at: 'DESC' },
       select: {
         id: true,
@@ -52,11 +52,26 @@ export class ScrapingService {
         bio: true,
         postCount: true,
       },
+      relations: {
+        sentimentResults: true,
+      },
       where: {
         user: {
           id: user.id,
         }
       },
+    });
+
+    return results.map((result) => {
+      const isAnalyzed = result.sentimentResults;
+      return {
+        id: result.id,
+        username: result.username,
+        full_name: result.fullName,
+        bio: result.bio,
+        post_count: result.postCount,
+        is_analyzed: isAnalyzed,
+      };
     });
   }
 
