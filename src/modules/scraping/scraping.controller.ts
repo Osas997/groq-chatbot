@@ -7,14 +7,19 @@ import {
   HttpStatus,
   Param,
   Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiConsumes,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { baseResponse } from 'src/helpers/base-response';
+import { validateJsonFile } from 'src/common/fileJsonValidation';
 import { CreateScrapeResultDto } from './dto/scrape.dto';
 import { ScrapingService } from './providers/scraping.service';
 import { User } from '../auth/decorators/user.decorator';
@@ -29,12 +34,25 @@ export class ScrapingController {
   @Post('results')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Simpan hasil scraping ke database' })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('file'))
   @ApiResponse({ status: 201, description: 'Hasil scraping tersimpan' })
   async createResult(
     @Body() dto: CreateScrapeResultDto,
+    @UploadedFile() file: Express.Multer.File,
     @User() user: ActiveUser,
   ) {
-    const result = await this.scrapingService.createResult(dto, user.sub);
+    validateJsonFile(file, {
+      maxSize: 1024 * 1024 * 5, // 5MB
+      allowedMimeTypes: [
+        'application/json',
+        'text/json',
+        'application/octet-stream',
+      ],
+      requireJsonExtension: true,
+    });
+
+    const result = await this.scrapingService.createResult(dto, file, user.sub);
     return baseResponse('Hasil scraping tersimpan', result);
   }
 

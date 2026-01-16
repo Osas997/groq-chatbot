@@ -16,6 +16,7 @@ import jwtConfig from './config/jwt.config';
 import { AuthGuard } from './modules/auth/guards/auth.guard';
 import { ScrapingModule } from './modules/scraping/scraping.module';
 import { AbsaModule } from './modules/absa/absa.module';
+import { FileModule } from './common/file/file.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { AbsaModule } from './modules/absa/absa.module';
     UmkmModule,
     ScrapingModule,
     AbsaModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [

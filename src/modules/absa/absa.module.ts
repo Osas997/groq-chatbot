@@ -8,6 +8,8 @@ import { RecommendationResult } from './entities/recommendation_result.entity';
 import { RecommendationBestPosting } from './entities/recommendation_best_posting.entity';
 import { RecommendationCaptions } from './entities/recommendation_captions.entity';
 import { RecommendationHastags } from './entities/recommendation_hastags.entity';
+import { HttpModule } from '@nestjs/axios';
+import { ScrapingModule } from '../scraping/scraping.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { RecommendationHastags } from './entities/recommendation_hastags.entity'
       RecommendationCaptions,
       RecommendationHastags,
     ]),
+    HttpModule,
+    ScrapingModule,
   ],
   controllers: [AbsaController],
   providers: [AbsaService],

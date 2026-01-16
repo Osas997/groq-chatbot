@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './providers/auth.service';
 import { LoginDto } from './dtos/login.dto';
 import { baseResponse } from 'src/helpers/base-response';
@@ -38,7 +38,7 @@ export class AuthController {
     return baseResponse('Refresh token successfully', data);
   }
 
-  @Post('me')
+  @Get('me')
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get current user' })

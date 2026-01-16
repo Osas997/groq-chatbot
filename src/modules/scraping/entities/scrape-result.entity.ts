@@ -11,7 +11,6 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'scrape_results' })
-@Index(['data'])
 export class ScrapeResult extends BaseCustomEntity {
   @Column({ unique: false, nullable: false, type: 'varchar', length: 255 })
   username: string;
@@ -22,11 +21,11 @@ export class ScrapeResult extends BaseCustomEntity {
   @Column({ nullable: true, type: 'varchar', length: 500 })
   bio: string;
 
-  @Column({ nullable: true, type: 'integer' })
+  @Column({ nullable: true, name: 'post_count', type: 'integer' })
   postCount: number;
 
-  @Column({ type: 'jsonb' })
-  data: any;
+  @Column({ type: 'varchar', name: 'full_data', length: 255 })
+  fullData: string;
 
   @ManyToOne(() => User, (user) => user.scrapeResults)
   @JoinColumn({ name: 'user_id' })

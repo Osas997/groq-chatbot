@@ -10,15 +10,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
 export class CreateScrapeResultDto {
-  @IsObject()
-  @IsNotEmptyObject()
   @ApiProperty({
-    description: 'Payload hasil scraping',
-    type: Object,
-    additionalProperties: true,
-    example: { title: 'Example Title', content: 'Example content...' },
+    description: 'File JSON hasil scraping',
+    type: 'string',
+    format: 'binary',
   })
-  data: Record<string, any>;
+  @IsOptional()
+  file: any;
 
   @ApiProperty({
     description: 'Username yang di-scrape',
