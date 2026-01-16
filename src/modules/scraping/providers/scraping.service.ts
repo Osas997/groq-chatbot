@@ -53,7 +53,9 @@ export class ScrapingService {
         postCount: true,
       },
       where: {
-        user,
+        user: {
+          id: user.id,
+        }
       },
     });
   }
