@@ -63,7 +63,7 @@ export class ScrapingService {
     });
 
     return results.map((result) => {
-      const isAnalyzed = result.sentimentResults;
+      const isAnalyzed = result.sentimentResults ? true : false;
       return {
         id: result.id,
         username: result.username,
