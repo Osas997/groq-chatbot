@@ -1,5 +1,5 @@
 import { BaseCustomEntity } from 'src/common/base-custom.entity';
-import { SentimentResult } from 'src/modules/absa/entities/sentiment_result.entity.entity';
+import { SentimentResult } from 'src/modules/absa/entities/sentiment_result.entity';
 import { ScrapeResult } from 'src/modules/scraping/entities/scrape-result.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 

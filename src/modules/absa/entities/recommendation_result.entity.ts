@@ -1,6 +1,6 @@
 import { BaseCustomEntity } from 'src/common/base-custom.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
-import { SentimentResult } from './sentiment_result.entity.entity';
+import { SentimentResult } from './sentiment_result.entity';
 import { RecommendationCaptions } from './recommendation_captions.entity';
 import { RecommendationHastags } from './recommendation_hastags.entity';
 import { RecommendationBestPosting } from './recommendation_best_posting.entity';
@@ -13,6 +13,7 @@ export class RecommendationResult extends BaseCustomEntity {
   @ManyToOne(
     () => SentimentResult,
     (sentimentResult) => sentimentResult.recommendationResults,
+    { onDelete: 'CASCADE' }, // Add onDelete cascade
   )
   @JoinColumn({ name: 'sentiment_result_id' })
   sentimentResult: SentimentResult;

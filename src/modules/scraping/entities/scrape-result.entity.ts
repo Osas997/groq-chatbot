@@ -1,5 +1,5 @@
 import { BaseCustomEntity } from 'src/common/base-custom.entity';
-import { SentimentResult } from 'src/modules/absa/entities/sentiment_result.entity.entity';
+import { SentimentResult } from 'src/modules/absa/entities/sentiment_result.entity';
 import { User } from 'src/modules/users/entities/user.entity';
 import {
   Column,
@@ -34,6 +34,7 @@ export class ScrapeResult extends BaseCustomEntity {
   @OneToOne(
     () => SentimentResult,
     (sentimentResult) => sentimentResult.scrapeResult,
+    { onDelete: 'CASCADE' },
   )
   sentimentResults: SentimentResult;
 }

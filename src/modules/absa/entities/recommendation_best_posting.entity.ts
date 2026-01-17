@@ -22,6 +22,7 @@ export class RecommendationBestPosting extends BaseCustomEntity {
   @ManyToOne(
     () => RecommendationResult,
     (recommendationResult) => recommendationResult.recommendationBestPostings,
+    { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'recommendation_result_id' })
   recommendationResult: RecommendationResult;

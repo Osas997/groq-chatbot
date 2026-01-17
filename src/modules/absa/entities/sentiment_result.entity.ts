@@ -16,6 +16,7 @@ export class SentimentResult extends BaseCustomEntity {
   @ManyToOne(
     () => ScrapeResult,
     (scrapeResult) => scrapeResult.sentimentResults,
+    { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'scrape_result_id' })
   scrapeResult: ScrapeResult;

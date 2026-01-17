@@ -1,6 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SentimentResult } from '../entities/sentiment_result.entity.entity';
+import { SentimentResult } from '../entities/sentiment_result.entity';
 import { DataSource, Repository } from 'typeorm';
 import { SentimentComments } from '../entities/sentiment_comments.entity';
 import { RecommendationResult } from '../entities/recommendation_result.entity';

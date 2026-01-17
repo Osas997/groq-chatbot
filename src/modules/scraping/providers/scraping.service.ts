@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ScrapeResult } from '../entities/scrape-result.entity';
@@ -98,6 +98,12 @@ export class ScrapingService {
 
     if (!result) {
       throw new NotFoundException('Scrape result not found');
+    }
+
+    try {
+      await this.fileService.deleteJson(result.fullData, 'scraping');
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to delete file');
     }
 
     await this.scrapeResultRepository.delete(id);

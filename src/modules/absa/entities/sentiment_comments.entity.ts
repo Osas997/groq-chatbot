@@ -1,6 +1,6 @@
 import { BaseCustomEntity } from 'src/common/base-custom.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { SentimentResult } from './sentiment_result.entity.entity';
+import { SentimentResult } from './sentiment_result.entity';
 import { Sentiment } from '../enums/sentiment.enum';
 
 @Entity('sentiment_comments')
@@ -35,6 +35,7 @@ export class SentimentComments extends BaseCustomEntity {
   @ManyToOne(
     () => SentimentResult,
     (sentimentResult) => sentimentResult.sentimentComments,
+    { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'sentiment_result_id' })
   sentimentResult: SentimentResult;

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AbsaController } from './absa.controller';
 import { AbsaService } from './providers/absa.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SentimentResult } from './entities/sentiment_result.entity.entity';
+import { SentimentResult } from './entities/sentiment_result.entity';
 import { SentimentComments } from './entities/sentiment_comments.entity';
 import { RecommendationResult } from './entities/recommendation_result.entity';
 import { RecommendationBestPosting } from './entities/recommendation_best_posting.entity';

@@ -10,6 +10,7 @@ export class RecommendationHastags extends BaseCustomEntity {
   @ManyToOne(
     () => RecommendationResult,
     (recommendationResult) => recommendationResult.recommendationHastags,
+    { onDelete: 'CASCADE' },
   )
   @JoinColumn({ name: 'recommendation_result_id' })
   recommendationResult: RecommendationResult;
