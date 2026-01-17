@@ -16,16 +16,8 @@ export class AbsaService {
   constructor(
     @InjectRepository(SentimentResult)
     private sentimentResultRepository: Repository<SentimentResult>,
-    @InjectRepository(SentimentComments)
-    private sentimentCommentsRepository: Repository<SentimentComments>,
     @InjectRepository(RecommendationResult)
     private recommendationResultRepository: Repository<RecommendationResult>,
-    @InjectRepository(RecommendationBestPosting)
-    private recommendationBestPostingRepository: Repository<RecommendationBestPosting>,
-    @InjectRepository(RecommendationCaptions)
-    private recommendationCaptionsRepository: Repository<RecommendationCaptions>,
-    @InjectRepository(RecommendationHastags)
-    private recommendationHastagsRepository: Repository<RecommendationHastags>,
     private httpService: HttpService,
     private scrapingService: ScrapingService,
     private fileService: FileService,
