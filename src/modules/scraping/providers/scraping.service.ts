@@ -103,6 +103,7 @@ export class ScrapingService {
     try {
       await this.fileService.deleteJson(result.fullData, 'scraping');
     } catch (error) {
+      console.error('Error deleting file:', error); // Log the actual error
       throw new InternalServerErrorException('Failed to delete file');
     }
 
