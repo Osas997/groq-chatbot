@@ -103,6 +103,7 @@ export class AbsaService {
         recommendationResult: recommendationResult.id,
       }
     } catch (error: any) {
+      console.log(error);
       await queryRunner.rollbackTransaction();
       throw new HttpException(error.message, error.response?.status || 500);
     } finally {
