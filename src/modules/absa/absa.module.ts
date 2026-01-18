@@ -11,6 +11,7 @@ import { RecommendationHastags } from './entities/recommendation_hastags.entity'
 import { HttpModule } from '@nestjs/axios';
 import { ScrapingModule } from '../scraping/scraping.module';
 import { FileModule } from 'src/common/file/file.module';
+import { RagModule } from '../rag/rag.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { FileModule } from 'src/common/file/file.module';
     HttpModule,
     ScrapingModule,
     FileModule,
+    RagModule,
   ],
   controllers: [AbsaController],
   providers: [AbsaService],

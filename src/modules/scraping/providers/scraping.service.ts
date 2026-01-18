@@ -8,6 +8,8 @@ import { UsersService } from 'src/modules/users/providers/users.service';
 import { FileService } from 'src/common/file/file.service';
 import { Parser } from 'json2csv';
 import * as ExcelJS from 'exceljs';
+import { Inject, forwardRef } from '@nestjs/common';
+import { RagService } from 'src/modules/rag/providers/rag.service';
 
 @Injectable()
 export class ScrapingService {
@@ -16,6 +18,8 @@ export class ScrapingService {
     private readonly scrapeResultRepository: Repository<ScrapeResult>,
     private readonly userService: UsersService,
     private readonly fileService: FileService,
+    @Inject(forwardRef(() => RagService))
+    private readonly ragService: RagService,
   ) {}
 
   async createResult(
@@ -81,7 +85,13 @@ export class ScrapingService {
       select: {
         id: true,
         fullData: true,
+        user: {
+          id: true,
+        }
       },
+      relations: {
+        user: true,
+      }
     });
 
     if (!result) {
@@ -103,10 +113,14 @@ export class ScrapingService {
     try {
       await this.fileService.deleteJson(result.fullData, 'scraping');
     } catch (error) {
-      console.error('Error deleting file:', error); // Log the actual error
+      console.error('Error deleting file:', error);
       throw new InternalServerErrorException('Failed to delete file');
     }
 
+    if(result.sentimentResults){
+      await this.ragService.deleteScraperData(id);
+    }
+    
     await this.scrapeResultRepository.delete(id);
   }
 

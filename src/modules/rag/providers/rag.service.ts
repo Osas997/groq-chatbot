@@ -4,9 +4,10 @@ import {
   Logger,
   HttpException,
   HttpStatus,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { ChatGroq } from '@langchain/groq';
-import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
 import { PromptTemplate } from '@langchain/core/prompts';
 import { RunnableSequence } from '@langchain/core/runnables';
@@ -17,6 +18,7 @@ import { PromptInsightsProvider } from './prompt-insights.provider';
 import { LoadDocumentsProvider } from './load-documents.provider';
 import { Pool } from 'pg';
 import { ConfigService } from '@nestjs/config';
+import { ScrapingService } from 'src/modules/scraping/providers/scraping.service';
 
 @Injectable()
 export class RagService implements OnModuleInit {
@@ -31,6 +33,8 @@ export class RagService implements OnModuleInit {
     private readonly configService: ConfigService,
     private readonly promptInsightsProvider: PromptInsightsProvider,
     private readonly loadDocumentsProvider: LoadDocumentsProvider,
+    @Inject(forwardRef(() => ScrapingService))
+    private readonly scrapingService: ScrapingService,
   ) {}
 
   async onModuleInit() {
@@ -141,6 +145,7 @@ export class RagService implements OnModuleInit {
           const retriever = this.vectorStore.asRetriever({
             k: 5,
             searchType: 'similarity',
+            filter: { scope: 'global' },
           });
 
           const relevantDocs = await retriever.invoke(input.question);
@@ -176,6 +181,74 @@ export class RagService implements OnModuleInit {
     }
   }
 
+  async ingestAbsaData(userId: string, scraperId: string, data: { summary: any; sentiment_trend: any }) {
+    const documents = this.loadDocumentsProvider.chunkingAbsa(userId, scraperId, data);
+    await this.vectorStore.addDocuments(documents);
+    this.logger.log(`Ingested ABSA data for user ${userId} scraper ${scraperId}`);
+  }
+
+  async queryScraperRAG(scraperId: string, question: string): Promise<string> {
+    try {
+      await this.scrapingService.getResultById(scraperId);
+
+      const retriever = this.vectorStore.asRetriever({
+        k: 1,
+        searchType: 'similarity',
+        filter: { scraperId }, 
+      });
+
+      const prompt = PromptTemplate.fromTemplate(
+        `Namamu adalah Sentinela.
+          Kamu adalah asisten RAG yang menjawab pertanyaan pengguna berdasarkan data analisis sentimen spesifik.
+          
+          Konteks (Data Scraper):
+          {context}
+
+          Pertanyaan: {question}
+
+          Jawab dengan jelas dan informatif berdasarkan data di atas. Jika data tidak menyebutkan sesuatu, katakan tidak tahu.
+          Jawaban:`,
+      );
+
+      const chain = RunnableSequence.from([
+        {
+          context: async (input: { question: string }) => {
+            const relevantDocs = await retriever.invoke(input.question);
+            return relevantDocs.map((doc) => doc.pageContent).join('\n\n');
+          },
+          question: (input: { question: string }) => input.question,
+        },
+        prompt,
+        this.llm,
+        new StringOutputParser(),
+      ]);
+
+      const response = await chain.invoke({ question });
+      return response;
+    } catch (error) {
+      this.logger.error('Error in scraper RAG query:', error);
+      throw new HttpException(
+        error.message,
+        error.status,
+      );
+    }
+  }
+
+  async insightsScraperRAG(scraperId: string){
+    try {
+      const prompt = this.promptInsightsProvider.prompt();
+
+      const result = await this.queryScraperRAG(scraperId, prompt);
+      return result;
+    } catch (error) {
+      this.logger.error('Error getting insights:', error);
+      throw new HttpException(
+        error.message,
+        error.status,
+      );
+    }
+  }
+
   async getInsights(): Promise<any> {
     try {
       const prompt = this.promptInsightsProvider.prompt();
@@ -185,12 +258,24 @@ export class RagService implements OnModuleInit {
     } catch (error) {
       this.logger.error('Error getting insights:', error);
       throw new HttpException(
-        {
-          message: 'Failed to generate insights',
-          error: error.message,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        error.message,
+        error.status,
       );
+    }
+  }
+  async deleteScraperData(scraperId: string): Promise<void> {
+    try {
+      const schema = this.configService.get('DATABASE_SCHEMA') || 'public';
+      const table =
+        this.configService.get('DATABASE_TABLE_NAME') || 'langchain_documents';
+      const qualifiedForSql = `"${schema}"."${table}"`;
+
+      const query = `DELETE FROM ${qualifiedForSql} WHERE metadata ->> 'scraperId' = $1`;
+      await this.pool.query(query, [scraperId]);
+      
+      this.logger.log(`Deleted vector data for scraperId: ${scraperId}`);
+    } catch (error) {
+      this.logger.error(`Failed to delete vector data for scraperId ${scraperId}:`, error);
     }
   }
 }

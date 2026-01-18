@@ -10,6 +10,7 @@ import { RecommendationHastags } from '../entities/recommendation_hastags.entity
 import { HttpService } from '@nestjs/axios';
 import { ScrapingService } from 'src/modules/scraping/providers/scraping.service';
 import { FileService } from 'src/common/file/file.service';
+import { RagService } from 'src/modules/rag/providers/rag.service';
 
 @Injectable()
 export class AbsaService {
@@ -21,7 +22,9 @@ export class AbsaService {
     private httpService: HttpService,
     private scrapingService: ScrapingService,
     private fileService: FileService,
+
     private dataSource: DataSource,
+    private ragService: RagService,
   ) {}
 
   async create(scraperId: string) {
@@ -88,6 +91,15 @@ export class AbsaService {
         });
       }
 
+      
+      await this.ragService.ingestAbsaData(
+        scrapeResult.user.id,
+        scraperId,
+        {
+        summary: dataResponse.summary,
+        sentiment_trend: dataResponse.sentiment_trend,
+      });
+      
       await queryRunner.commitTransaction();
 
       return {
