@@ -143,7 +143,7 @@ export class RagService implements OnModuleInit {
       {
         context: async (input: { question: string }) => {
           const retriever = this.vectorStore.asRetriever({
-            k: 5,
+            k: 3,
             searchType: 'similarity',
             filter: { scope: 'global' },
           });

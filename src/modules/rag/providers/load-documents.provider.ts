@@ -61,22 +61,22 @@ export class LoadDocumentsProvider {
         }
 
         if (data?.sentimen_per_brand) {
-          for (const [brand, stats] of Object.entries(
-            data.sentimen_per_brand,
-          )) {
-            documents.push(
-              new Document({
-                pageContent: this.formatBrandAnalysis(brand, stats),
-                metadata: {
-                  source: 'dataset_umkm.json',
-                  type: 'sentimen_per_brand',
-                  category: 'brand',
-                  brand_name: brand,
-                  scope: 'global',
-                },
-              }),
-            );
+          let combinedBrandText = 'Analisis Sentimen Seluruh Brand:\n\n';
+          for (const [brand, stats] of Object.entries(data.sentimen_per_brand)) {
+             combinedBrandText += this.formatBrandAnalysis(brand, stats) + '\n---\n';
           }
+
+          documents.push(
+            new Document({
+              pageContent: combinedBrandText,
+              metadata: {
+                source: 'dataset_umkm.json',
+                type: 'sentimen_per_brand',
+                category: 'brand',
+                scope: 'global',
+              },
+            }),
+          );
         }
 
         if (data?.engagement_per_sentimen) {
