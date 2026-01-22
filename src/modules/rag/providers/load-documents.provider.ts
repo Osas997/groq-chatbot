@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { Document } from '@langchain/core/documents';
 import { Logger } from '@nestjs/common';
+import { ScrapeResult } from 'src/modules/scraping/entities/scrape-result.entity';
 
 @Injectable()
 export class LoadDocumentsProvider {
@@ -245,13 +246,13 @@ export class LoadDocumentsProvider {
      return JSON.stringify(obj, null, 2); 
   }
 
-  chunkingAbsa(userId: string, scraperId: string, data: { summary: any; sentiment_trend: any }){
+  chunkingAbsa(userId: string, scrape: ScrapeResult, data: { summary: any; sentiment_trend: any }){
     try {
       const documents: Document[] = [];
 
       // Semantic Chunk 1: Summary
       const summaryText = `
-      Analisis Sentimen Ringkasan (Scraper ID: ${scraperId}):
+      Analisis Sentimen Ringkasan (Scraper ID: ${scrape.id}) dengan username instagram ${scrape.username} dan full name ${scrape.fullName}:
       
       Persentase Sentimen:
       - Harga: Netral ${data.summary.percentage.price.neutral}%, Negatif ${data.summary.percentage.price.negative}%, Positif ${data.summary.percentage.price.positive}%
@@ -272,18 +273,18 @@ export class LoadDocumentsProvider {
 
       documents.push({
         pageContent: summaryText,
-        metadata: { userId, scraperId, type: 'absa_summary' },
+        metadata: { userId, scrapeId: scrape.id, type: 'absa_summary' },
       });
 
       // Semantic Chunk 2: Sentiment Trend
-      let trendText = `Tren Sentimen (Scraper ID: ${scraperId}) (Granularity: ${data.sentiment_trend.granularity}):\n`;
+      let trendText = `Tren Sentimen (Scraper ID: ${scrape.id}) dengan username instagram ${scrape.username} dan full name ${scrape.fullName} (Granularity: ${data.sentiment_trend.granularity}):\n`;
       for (const trend of data.sentiment_trend.trend) {
         trendText += `- Tanggal ${trend.date}: Netral ${trend.neutral}, Negatif ${trend.negative}, Positif ${trend.positive}\n`;
       }
       
       documents.push({
         pageContent: trendText.trim(),
-        metadata: { userId, scraperId, type: 'absa_trend' },
+        metadata: { userId, scrapeId: scrape.id, type: 'absa_trend' },
       });
 
     return documents;

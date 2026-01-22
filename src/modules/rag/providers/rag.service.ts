@@ -19,6 +19,7 @@ import { LoadDocumentsProvider } from './load-documents.provider';
 import { Pool } from 'pg';
 import { ConfigService } from '@nestjs/config';
 import { ScrapingService } from 'src/modules/scraping/providers/scraping.service';
+import { ScrapeResult } from 'src/modules/scraping/entities/scrape-result.entity';
 
 @Injectable()
 export class RagService implements OnModuleInit {
@@ -181,10 +182,10 @@ export class RagService implements OnModuleInit {
     }
   }
 
-  async ingestAbsaData(userId: string, scraperId: string, data: { summary: any; sentiment_trend: any }) {
-    const documents = this.loadDocumentsProvider.chunkingAbsa(userId, scraperId, data);
+  async ingestAbsaData(userId: string, scrape: ScrapeResult, data: { summary: any; sentiment_trend: any }) {
+    const documents = this.loadDocumentsProvider.chunkingAbsa(userId, scrape, data);
     await this.vectorStore.addDocuments(documents);
-    this.logger.log(`Ingested ABSA data for user ${userId} scraper ${scraperId}`);
+    this.logger.log(`Ingested ABSA data for user ${userId} scraper ${scrape.id}`);
   }
 
   async queryScraperRAG(scraperId: string, question: string): Promise<string> {

@@ -17,6 +17,8 @@ export class AbsaService {
   constructor(
     @InjectRepository(SentimentResult)
     private sentimentResultRepository: Repository<SentimentResult>,
+    @InjectRepository(SentimentComments)
+    private sentimentCommentsRepository: Repository<SentimentComments>,
     @InjectRepository(RecommendationResult)
     private recommendationResultRepository: Repository<RecommendationResult>,
     private httpService: HttpService,
@@ -94,7 +96,7 @@ export class AbsaService {
       
       await this.ragService.ingestAbsaData(
         scrapeResult.user.id,
-        scraperId,
+        scrapeResult,
         {
         summary: dataResponse.summary,
         sentiment_trend: dataResponse.sentiment_trend,
@@ -115,25 +117,37 @@ export class AbsaService {
     }
   }
 
-  async getByIdScraping(scraperId: string) {
+  async getByIdScraping(scraperId: string, page: number = 1, limit: number = 10) {
     const sentimentResult = await this.sentimentResultRepository.findOne({
       where: { scrapeResult: { id: scraperId } },
       select: {
         id: true,
         summary: true,
         sentiment_trend: true,
-        sentimentComments: true,
       },
-      relations: {
-        sentimentComments: true,
-      }
     });
 
-    if(!sentimentResult) {
+    if (!sentimentResult) {
       throw new HttpException('Sentiment result not found', 404);
     }
 
-    return sentimentResult;
+    const [comments, total] = await this.sentimentCommentsRepository.findAndCount({
+      where: { sentimentResult: { id: sentimentResult.id } },
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { created_at: 'DESC' },
+    });
+
+    return {
+      ...sentimentResult,
+      sentimentComments: comments,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async getRecommendationResult(scraperId: string) {
