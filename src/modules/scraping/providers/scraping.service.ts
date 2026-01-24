@@ -84,6 +84,9 @@ export class ScrapingService {
       where: { id },
       select: {
         id: true,
+        username: true,
+        fullName: true,
+        postCount: true,
         fullData: true,
         user: {
           id: true,
