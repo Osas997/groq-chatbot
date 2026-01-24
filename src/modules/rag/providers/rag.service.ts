@@ -195,7 +195,7 @@ export class RagService implements OnModuleInit {
       const retriever = this.vectorStore.asRetriever({
         k: 1,
         searchType: 'similarity',
-        filter: { scraperId }, 
+        filter: { scrapeId: scraperId }, 
       });
 
       const prompt = PromptTemplate.fromTemplate(
