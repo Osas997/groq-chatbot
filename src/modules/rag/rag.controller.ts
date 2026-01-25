@@ -30,9 +30,10 @@ export class RagController {
   @ApiOperation({ summary: 'Ajukan pertanyaan ke sistem RAG' })
   @ApiResponse({ status: 200, description: 'Berhasil mendapat jawaban' })
   async queryUMKM(@Body() queryDto: CreateQueryDto) {
-    this.logger.log(`Received query: ${queryDto.question}`);
+    const processedQuestion = queryDto.question.trim().toLowerCase();
+    this.logger.log(`Received query: ${processedQuestion}`);
 
-    const answer = await this.ragService.queryRAG(queryDto.question);
+    const answer = await this.ragService.queryRAG(processedQuestion);
 
     return baseResponse('Berhasil mendapat jawaban', answer);
   }
@@ -47,9 +48,10 @@ export class RagController {
     @Body() queryDto: CreateQueryDto,
     @User() user: ActiveUser,
   ) {
-    this.logger.log(`Received scraper query for scraper ${scraperId} from user ${user?.sub}: ${queryDto.question}`);
+    const processedQuestion = queryDto.question.trim().toLowerCase();
+    this.logger.log(`Received scraper query for scraper ${scraperId} from user ${user?.sub}: ${processedQuestion}`);
 
-    const answer = await this.ragService.queryScraperRAG(scraperId, queryDto.question);
+    const answer = await this.ragService.queryScraperRAG(scraperId, processedQuestion);
 
     return baseResponse('Berhasil mendapat jawaban', answer);
   }
