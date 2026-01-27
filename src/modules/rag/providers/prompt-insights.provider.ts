@@ -5,66 +5,44 @@ export class PromptInsightsProvider {
   prompt(): string {
     return `Buatkan key insight dan key strategy berdasarkan data di atas.
   
-      <div class="insights-container">
-      <strong>Pola Penting:</strong>
-      <ol>
-        <li>Hubungan antara sentimen positif dan engagement: Apakah benar konten positif menghasilkan engagement 40% lebih tinggi?</li>
-        <li>Analisis sentimen netral: Peluang apa yang bisa ditangkap UMKM untuk meningkatkan daya saing dari opini yang belum jelas positif/negative?</li>
-        <li>Dari sentimen positif, aspek apa yang paling sering dipuji (harga, kualitas, pelayanan, inovasi)? Bagaimana UMKM bisa memanfaatkan hal tersebut sebagai branding?</li>
-        <li>Berdasarkan analisis sentimen, strategi komunikasi digital apa yang sebaiknya dijalankan UMKM untuk meningkatkan citra di media sosial?</li>
-        <li>Mengapa hanya 0.6% konten yang berhasil memicu emosi positif?</li>
-        <li>Potensi Tersembunyi: Apakah ada postingan netral dengan engagement tinggi yang sebenarnya bisa dikategorikan positif?</li>
-        <li>Analisis bagaimana UMKM lokal di Indonesia saat ini memanfaatkan media sosial untuk membangun citra brand. Identifikasi gap antara penggunaan media sosial tradisional dengan pendekatan analisis sentimen yang lebih canggih.</li>
-        <li>Berikan data statistik terkini dan contoh kasus nyata</li>
-        <li>Berikan rekomendasi aksi konkret yang bisa dijalankan UMKM pemula untuk mencapai target engagement dengan sentimen terpositif dari daftar brand yang diberikan.</li>
-      </ol>
+      **Pola Penting:**
+      1. Hubungan antara sentimen positif dan engagement: Apakah benar konten positif menghasilkan engagement 40% lebih tinggi?
+      2. Analisis sentimen netral: Peluang apa yang bisa ditangkap UMKM untuk meningkatkan daya saing dari opini yang belum jelas positif/negative?
+      3. Dari sentimen positif, aspek apa yang paling sering dipuji (harga, kualitas, pelayanan, inovasi)? Bagaimana UMKM bisa memanfaatkan hal tersebut sebagai branding?
+      4. Berdasarkan analisis sentimen, strategi komunikasi digital apa yang sebaiknya dijalankan UMKM untuk meningkatkan citra di media sosial?
+      5. Mengapa hanya 0.6% konten yang berhasil memicu emosi positif?
+      6. Potensi Tersembunyi: Apakah ada postingan netral dengan engagement tinggi yang sebenarnya bisa dikategorikan positif?
+      7. Analisis bagaimana UMKM lokal di Indonesia saat ini memanfaatkan media sosial untuk membangun citra brand. Identifikasi gap antara penggunaan media sosial tradisional dengan pendekatan analisis sentimen yang lebih canggih.
+      8. Berikan data statistik terkini dan contoh kasus nyata
+      9. Berikan rekomendasi aksi konkret yang bisa dijalankan UMKM pemula untuk mencapai target engagement dengan sentimen terpositif dari daftar brand yang diberikan.
 
-      <strong>Arah Analisis:</strong>
-      <ul>
-        <li>Fokus pada: Strategi konten</li>
-        <li>Tujuan: Meningkatkan engagement melalui konten yang lebih emosional</li>
-        <li>Stakeholder: Tim marketing</li>
-      </ul>
+      **Arah Analisis:**
+      - Fokus pada: Strategi konten
+      - Tujuan: Meningkatkan engagement melalui konten yang lebih emosional
+      - Stakeholder: Tim marketing
 
-      <strong>Format Output (Gunakan HTML):</strong>
-      <ol>
-        <li><strong>Headline Insight</strong>: 1 kalimat singkat yang paling mencolok</li>
-        <li><strong>Data Pendukung</strong>: 3-5 angka kunci terkait (Sajikan dalam &lt;table&gt; jika memungkinkan)</li>
-        <li><strong>Analisis Mendalam</strong>:
-            <ul>
-                <li>Penyebab potensial</li>
-                <li>Implikasi bisnis</li>
-                <li>Perbandingan dengan benchmark</li>
-            </ul>
-        </li>
-        <li><strong>Rekomendasi Aksi</strong>:
-            <ul>
-                <li>2-3 langkah konkret</li>
-                <li>Timeline implementasi</li>
-                <li>Metrik sukses</li>
-            </ul>
-        </li>
-        <li><strong>Risiko & Peluang</strong>:
-            <ul>
-                <li>Risiko jika tidak diatasi</li>
-                <li>Peluang yang bisa dimanfaatkan</li>
-            </ul>
-        </li>
-        <li><strong>Saran dan Strategy</strong>:
-            <ul>
-                <li>Saran untuk UMKM kedepannya</li>
-                <li>Strategy yang nanti digunakan kedepannya</li>
-            </ul>
-        </li>
-        <li><strong>Rekomendasi Aksi</strong>: 2-3 langkah konkret yang bisa dijalankan UMKM pemula</li>
-        <li><strong>Kesimpulan</strong>: 1 kalimat singkat yang paling mencolok</li>
-      </ol>
+      **Format Output:**
+      1. **Headline Insight**: 1 kalimat singkat yang paling mencolok
+      2. **Data Pendukung**: 3-5 angka kunci terkait
+      3. **Analisis Mendalam**:
+          - Penyebab potensial
+          - Implikasi bisnis
+          - Perbandingan dengan benchmark
+      4. **Rekomendasi Aksi**:
+          - 2-3 langkah konkret
+          - Timeline implementasi
+          - Metrik sukses
+      5. **Risiko & Peluang**:
+          - Risiko jika tidak diatasi
+          - Peluang yang bisa dimanfaatkan
+      6. **Saran dan Strategy**:
+          - Saran untuk UMKM kedepannya
+          - Strategy yang nanti digunakan kedepannya
+      7. **Rekomendasi Aksi**: 2-3 langkah konkret yang bisa dijalankan UMKM pemula
+      8. **Kesimpulan**: 1 kalimat singkat yang paling mencolok
 
-      <strong>Tingkat Kedalaman:</strong> Komprehensif
+      **Tingkat Kedalaman:** Komprehensif
 
-      Berikan jawaban yang terstruktur dan mendalam berdasarkan data yang tersedia. Gunakan emoji yang relevan pada setiap Headline Insight. Pastikan output adalah valid HTML tanpa markdown wrappers.</div>
-      
-      Format: PENTING! Output HARUS "Minified HTML" (satu baris teks sambung). DILARANG menggunakan karakter newline (\n) atau tab (\t).
-      `;
+      Berikan jawaban yang terstruktur dan mendalam berdasarkan data yang tersedia. tambahkan emoji yang relevan pada setiap Headline Insight`;
   }
 }
