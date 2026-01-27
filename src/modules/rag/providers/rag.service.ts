@@ -136,10 +136,10 @@ export class RagService implements OnModuleInit {
 
         Pertanyaan: {question}
 
-        Instruksi Format:
-        1. Jawaban HARUS dalam format HTML (gunakan tag <p>, <ul>, <li>, <b>, dll).
-        2. JIKA data cocok ditampilkan dalam bentuk tabel (seperti perbandingan, list data, atau statistik), GUNAKAN tag HTML <table>, <thead>, <tbody>, <tr>, <th>, dan <td>.
-        3. Jangan gunakan markdown block code (seperti \`\`\`html), berikan langsung raw HTML.
+       Instruksi Format:
+          1. Jawaban HARUS dalam format HTML.
+          2. JIKA menampilkan data statistik, perbandingan sentimen, atau list terstruktur, GUNAKAN format HTML TABLE (<table>).
+          3. Jangan gunakan karakter dari markdown seperti "\n" atau "\t".
 
         Jawab dengan konsisten sesuai konteks. 
         Jawaban:`,
@@ -215,7 +215,7 @@ export class RagService implements OnModuleInit {
           Instruksi Format:
           1. Jawaban HARUS dalam format HTML.
           2. JIKA menampilkan data statistik, perbandingan sentimen, atau list terstruktur, GUNAKAN format HTML TABLE (<table>).
-          3. Jangan gunakan markdown.
+          3. Jangan gunakan karakter dari markdown seperti "\n" atau "\t".
 
           Jawab dengan jelas dan informatif berdasarkan data di atas. Jika data tidak menyebutkan sesuatu, katakan tidak tahu.
           Jawaban:`,

@@ -62,6 +62,9 @@ export class PromptInsightsProvider {
 
       <strong>Tingkat Kedalaman:</strong> Komprehensif
 
-      Berikan jawaban yang terstruktur dan mendalam berdasarkan data yang tersedia. Gunakan emoji yang relevan pada setiap Headline Insight. Pastikan output adalah valid HTML tanpa markdown wrappers.</div>`;
+      Berikan jawaban yang terstruktur dan mendalam berdasarkan data yang tersedia. Gunakan emoji yang relevan pada setiap Headline Insight. Pastikan output adalah valid HTML tanpa markdown wrappers.</div>
+      
+      Format: Jangan gunakan karakter dari markdown seperti "\n" atau "\t".
+      `;
   }
 }
