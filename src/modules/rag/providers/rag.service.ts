@@ -133,7 +133,7 @@ export class RagService implements OnModuleInit {
 
         Pertanyaan: {question}
 
-        ${!isKomplek && 'Jawab menggunakan paragraf yang jelas dan informatif dan saling mengalir, tambahkan juga aktual datanya jika diperlukan'}
+         ${!isKomplek && 'Jawab menggunakan paragraf yang jelas dan informatif dan saling mengalir, tambahkan juga aktual datanya jika diperlukan jangan gunakan format table karena akan merusak pada tampilan html nya tapi tetap jelas dan informatif'}
 
         Jawab dengan jelas dan informatif berdasarkan data di atas. Jika data tidak menyebutkan sesuatu, katakan tidak tahu.
 
@@ -209,7 +209,7 @@ export class RagService implements OnModuleInit {
 
           Pertanyaan: {question}
 
-          ${!isKomplek && 'Jawab menggunakan paragraf yang jelas dan informatif dan saling mengalir, tambahkan juga aktual datanya jika diperlukan'}
+          ${!isKomplek && 'Jawab menggunakan paragraf yang jelas dan informatif dan saling mengalir, tambahkan juga aktual datanya jika diperlukan jangan gunakan format table karena akan merusak pada tampilan html nya tapi tetap jelas dan informatif'}
 
           Jawab dengan jelas dan informatif berdasarkan data di atas. Jika data tidak menyebutkan sesuatu, katakan tidak tahu.
           
