@@ -64,7 +64,7 @@ export class PromptInsightsProvider {
 
       Berikan jawaban yang terstruktur dan mendalam berdasarkan data yang tersedia. Gunakan emoji yang relevan pada setiap Headline Insight. Pastikan output adalah valid HTML tanpa markdown wrappers.</div>
       
-      Format: Jangan gunakan karakter dari markdown seperti "\\n" atau "\\t".
+      Format: PENTING! Output HARUS "Minified HTML" (satu baris teks sambung). DILARANG menggunakan karakter newline (\n) atau tab (\t).
       `;
   }
 }

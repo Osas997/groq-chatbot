@@ -136,10 +136,11 @@ export class RagService implements OnModuleInit {
 
         Pertanyaan: {question}
 
-       Instruksi Format:
-          1. Jawaban HARUS dalam format HTML.
-          2. JIKA menampilkan data statistik, perbandingan sentimen, atau list terstruktur, GUNAKAN format HTML TABLE (<table>).
-          3. Jangan gunakan karakter dari markdown seperti "\\n" atau "\\t".
+        Instruksi Format:
+        1. Jawaban HARUS dalam format HTML.
+        2. JIKA data cocok ditampilkan dalam bentuk tabel, GUNAKAN tag HTML <table>.
+        3. PENTING: Output HARUS "Minified HTML" (satu baris teks sambung). 
+        4. DILARANG menggunakan karakter newline (\n), enter, atau tab (\t). Hapus semua whitespace yang tidak perlu.
 
         Jawab dengan konsisten sesuai konteks. 
         Jawaban:`,
@@ -215,7 +216,8 @@ export class RagService implements OnModuleInit {
           Instruksi Format:
           1. Jawaban HARUS dalam format HTML.
           2. JIKA menampilkan data statistik, perbandingan sentimen, atau list terstruktur, GUNAKAN format HTML TABLE (<table>).
-          3. Jangan gunakan karakter dari markdown seperti "\\n" atau "\\t".
+          3. PENTING: Output HARUS "Minified HTML" (satu baris teks sambung).
+          4. DILARANG menggunakan karakter newline (\n), enter, atau tab (\t). Hapus semua whitespace yang tidak perlu.
 
           Jawab dengan jelas dan informatif berdasarkan data di atas. Jika data tidak menyebutkan sesuatu, katakan tidak tahu.
           Jawaban:`,
