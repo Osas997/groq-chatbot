@@ -121,12 +121,9 @@ export class RagService implements OnModuleInit {
         `Inserted ${documents.length} chunks into ${qualifiedForStore}`,
       );
     }
-
-    // Create RAG chain
-    await this.createRAGChain();
   }
 
-  private async createRAGChain() {
+  private async createRAGChain(isKomplek: boolean = false) {
     const prompt = PromptTemplate.fromTemplate(
       `Namamu adalah Sentinela.
         Kamu adalah asisten RAG yang hanya boleh menjawab berdasarkan konteks berikut.
@@ -136,7 +133,7 @@ export class RagService implements OnModuleInit {
 
         Pertanyaan: {question}
 
-        JIKA ingin menampilkan data statistik, perbandingan sentimen, atau list terstruktur, GUNAKAN format HTML TABLE (<table>). dan DILARANG menggunakan karakter newline (\n), enter, atau tab (\t). Hapus semua whitespace yang tidak perlu.
+        ${!isKomplek && 'Jawab menggunakan paragraf yang jelas dan informatif dan saling mengalir, tambahkan juga aktual datanya jika diperlukan'}
 
         Jawab dengan jelas dan informatif berdasarkan data di atas. Jika data tidak menyebutkan sesuatu, katakan tidak tahu.
 
@@ -164,8 +161,10 @@ export class RagService implements OnModuleInit {
     ]);
   }
 
-  async queryRAG(question: string): Promise<string> {
+  async queryRAG(question: string, isKomplek: boolean = false): Promise<string> {
     try {
+      await this.createRAGChain(isKomplek);
+      
       if (!this.chain) {
         throw new Error('RAG chain not initialized');
       }
@@ -191,7 +190,7 @@ export class RagService implements OnModuleInit {
     this.logger.log(`Ingested ABSA data for user ${userId} scraper ${scrape.id}`);
   }
 
-  async queryScraperRAG(scraperId: string, question: string): Promise<string> {
+  async queryScraperRAG(scraperId: string, question: string, isKomplek: boolean = false): Promise<string> {
     try {
       await this.scrapingService.getResultById(scraperId);
 
@@ -210,7 +209,7 @@ export class RagService implements OnModuleInit {
 
           Pertanyaan: {question}
 
-          JIKA ingin menampilkan data statistik, perbandingan sentimen, atau list terstruktur, GUNAKAN format HTML TABLE (<table>). dan Outputnya HARUS "Minified HTML" (satu baris teks sambung). DILARANG menggunakan karakter newline (\n), enter, atau tab (\t). Hapus semua whitespace yang tidak perlu.
+          ${!isKomplek && 'Jawab menggunakan paragraf yang jelas dan informatif dan saling mengalir, tambahkan juga aktual datanya jika diperlukan'}
 
           Jawab dengan jelas dan informatif berdasarkan data di atas. Jika data tidak menyebutkan sesuatu, katakan tidak tahu.
           
@@ -245,7 +244,7 @@ export class RagService implements OnModuleInit {
     try {
       const prompt = this.promptInsightsProvider.prompt();
 
-      const result = await this.queryScraperRAG(scraperId, prompt);
+      const result = await this.queryScraperRAG(scraperId, prompt, true);
       return result;
     } catch (error) {
       this.logger.error('Error getting insights:', error);
@@ -260,7 +259,7 @@ export class RagService implements OnModuleInit {
     try {
       const prompt = this.promptInsightsProvider.prompt();
 
-      const result = await this.queryRAG(prompt);
+      const result = await this.queryRAG(prompt, true);
       return result;
     } catch (error) {
       this.logger.error('Error getting insights:', error);
@@ -270,6 +269,7 @@ export class RagService implements OnModuleInit {
       );
     }
   }
+  
   async deleteScraperData(scraperId: string): Promise<void> {
     try {
       const schema = this.configService.get('DATABASE_SCHEMA') || 'public';
