@@ -51,7 +51,7 @@ export class RagService implements OnModuleInit {
       // Initialize embeddings
       this.embeddings = new GoogleGenerativeAIEmbeddings({
         apiKey: process.env.GOOGLE_API_KEY,
-        modelName: 'text-embedding-004',
+        modelName: 'gemini-embedding-001',
       });
 
       this.pool = new Pool({
