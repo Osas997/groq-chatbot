@@ -23,76 +23,176 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+# Sentinela - Analisis Sentimen Instagram UMKM + Rekomendasi Konten
 
-## Project setup
+Sentinela adalah aplikasi untuk membantu UMKM memahami sentimen audiens Instagram dan mendapatkan rekomendasi konten yang lebih tepat sasaran.
 
-```bash
-$ npm install
+Aplikasi ini menyediakan:
+
+- Analisis sentimen komentar Instagram (ABSA)
+- Rekomendasi strategi konten UMKM berbasis NLP
+- Chatbot untuk menjawab pertanyaan user terkait hasil sentimen
+- Penyimpanan data berbasis PostgreSQL + pgvector untuk kebutuhan RAG
+
+## Teknologi
+
+Backend:
+
+- NestJS
+- TypeORM
+- PostgreSQL + pgvector
+- RAG (Retrieval-Augmented Generation)
+
+Frontend:
+
+- React.js
+
+AI/NLP:
+
+- Fine-tuning IndoBERT untuk ABSA (Aspect-Based Sentiment Analysis)
+- NLP untuk rekomendasi konten
+
+## Prasyarat
+
+- Node.js `22.13.1` (sesuai `package.json`)
+- npm
+- Docker + Docker Compose
+
+## Arsitektur Database (Wajib pgvector)
+
+Project ini **wajib** menggunakan PostgreSQL yang memiliki extension `vector` (pgvector).
+
+Di project ini sudah disiapkan image Docker:
+
+- `ankane/pgvector:latest`
+
+`docker-compose.yml` dan `docker-compose.prod.yml` sudah menggunakan image tersebut.
+
+## Konfigurasi Environment
+
+Buat/siapkan file `.env` dengan minimal variabel berikut:
+
+```env
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_USERNAME=postgres
+DATABASE_PASSWORD=
+DATABASE_NAME=sentinela
+DATABASE_SYNCHRONIZE=true
+DATABASE_AUTOLOAD=true
+
+JWT_SECRET=your-jwt-secret
+JWT_REFRESH_SECRET=your-jwt-refresh-secret
+JWT_ACCESS_TOKEN_TTL=1d
+JWT_REFRESH_TOKEN_TTL=7d
+
+GROQ_API_KEY=your-groq-api-key
+GOOGLE_API_KEY=your-google-api-key
+PORT=8080
 ```
 
-## Compile and run the project
+Catatan:
+
+- Untuk lingkungan production, gunakan secret yang aman dan nonaktifkan `DATABASE_SYNCHRONIZE`.
+
+## Instalasi dan Menjalankan Project
+
+### Opsi A - Jalankan PostgreSQL + pgvector via Docker, backend di host
+
+1. Jalankan database pgvector:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+docker compose up -d db
 ```
 
-## Run tests
+2. Pastikan container sehat:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker ps
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+3. Install dependency backend:
 
 ```bash
-$ npm install -g mau
-$ mau deploy
+npm install
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+4. Jalankan backend:
 
-## Resources
+```bash
+npm run start:dev
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### Opsi B - Jalankan full stack backend + db via Docker Compose (production style)
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+```
 
-## Support
+## Verifikasi pgvector
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Setelah database aktif, verifikasi extension `vector`:
 
-## Stay in touch
+```bash
+docker exec -it pgvector_db psql -U postgres -d sentinela -c "CREATE EXTENSION IF NOT EXISTS vector;"
+docker exec -it pgvector_db psql -U postgres -d sentinela -c "SELECT extversion FROM pg_extension WHERE extname = 'vector';"
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Import SQL Dump
 
-## License
+Jika ingin memulihkan data awal dari dump:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+File dump yang tersedia:
+
+- `sentinela_dump_2026-05-25.sql`
+
+Import ke database:
+
+```bash
+docker exec -i pgvector_db psql -U postgres -d sentinela < sentinela_dump_2026-05-25.sql
+```
+
+## Menjalankan Frontend
+
+Frontend menggunakan React.js.
+
+Jika frontend berada di repository terpisah:
+
+1. Masuk ke folder frontend
+2. Install dependency (`npm install`)
+3. Jalankan (`npm run dev` atau script yang disediakan frontend)
+4. Arahkan base URL API ke backend Sentinela
+
+## Struktur Fitur Utama (Backend)
+
+- `auth`: autentikasi dan token
+- `users`: manajemen user
+- `scraping`: penyimpanan hasil scraping Instagram
+- `absa`: analisis sentimen berbasis aspek
+- `rag`: retrieval + chatbot untuk insight sentimen
+
+## Script NPM Penting
+
+```bash
+npm run start:dev
+npm run build
+npm run start:prod
+npm run test
+```
+
+## API Endpoint
+
+Secara default backend berjalan di:
+
+- `http://localhost:8080`
+
+Jika Swagger diaktifkan oleh implementasi app, akses dokumentasi API melalui route Swagger yang dikonfigurasi pada aplikasi.
+
+## Referensi Teknis
+
+- pgvector: aktifkan extension dengan `CREATE EXTENSION vector;`
+- NestJS: jalankan aplikasi dengan script npm (`npm run start`, `npm run start:dev`)
+
+## Lisensi
+
+UNLICENSED
